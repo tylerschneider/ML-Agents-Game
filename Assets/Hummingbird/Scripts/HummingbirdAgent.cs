@@ -37,6 +37,9 @@ public class HummingbirdAgent : Agent
     // The nearest flower to the agent
     private Flower nearestFlower;
 
+    //The nearest hoop to the agent
+    private Hoop nearestHoop;
+
     // Allows for smoother pitch changes
     private float smoothPitchChange = 0f;
 
@@ -52,6 +55,8 @@ public class HummingbirdAgent : Agent
     // Whether the agent is frozen (intentionally not flying)
     private bool frozen = false;
 
+    private float rotX;
+
     /// <summary>
     /// The amount of nectar the agent has obtained this episode
     /// </summary>
@@ -64,7 +69,6 @@ public class HummingbirdAgent : Agent
     {
         rigidbody = GetComponent<Rigidbody>();
         flowerArea = GetComponentInParent<FlowerArea>();
-
         // If not training mode, no max step, play forever
         if (!trainingMode) MaxStep = 0;
     }
@@ -164,21 +168,21 @@ public class HummingbirdAgent : Agent
         sensor.AddObservation(transform.localRotation.normalized);
 
         // Get a vector from the beak tip to the nearest flower
-        Vector3 toFlower = nearestFlower.FlowerCenterPosition - beakTip.position;
+        Vector3 toRing = nearestFlower.FlowerCenterPosition - beakTip.position;
 
         // Observe a normalized vector pointing to the nearest flower (3 observations)
-        sensor.AddObservation(toFlower.normalized);
+        sensor.AddObservation(toRing.normalized);
 
         // Observe a dot product that indicates whether the beak tip is in front of the flower (1 observation)
         // (+1 means that the beak tip is directly in front of the flower, -1 means directly behind)
-        sensor.AddObservation(Vector3.Dot(toFlower.normalized, -nearestFlower.FlowerUpVector.normalized));
+        sensor.AddObservation(Vector3.Dot(toRing.normalized, -nearestFlower.FlowerUpVector.normalized));
 
         // Observe a dot product that indicates whether the beak is pointing toward the flower (1 observation)
         // (+1 means that the beak is pointing directly at the flower, -1 means directly away)
         sensor.AddObservation(Vector3.Dot(beakTip.forward.normalized, -nearestFlower.FlowerUpVector.normalized));
 
         // Observe the relative distance from the beak tip to the flower (1 observation)
-        sensor.AddObservation(toFlower.magnitude / FlowerArea.AreaDiameter);
+        sensor.AddObservation(toRing.magnitude / FlowerArea.AreaDiameter);
 
         // 10 total observations
     }
@@ -201,25 +205,34 @@ public class HummingbirdAgent : Agent
         // Convert keyboard inputs to movement and turning
         // All values should be between -1 and +1
 
-        // Forward/backward
+        //// Forward/backward
         if (Input.GetKey(KeyCode.W)) forward = transform.forward;
         else if (Input.GetKey(KeyCode.S)) forward = -transform.forward;
 
-        // Left/right
+        //// Left/right
         if (Input.GetKey(KeyCode.A)) left = -transform.right;
         else if (Input.GetKey(KeyCode.D)) left = transform.right;
 
-        // Up/down
-        if (Input.GetKey(KeyCode.E)) up = transform.up;
-        else if (Input.GetKey(KeyCode.C)) up = -transform.up;
+        //// Up/down
+        //if (Input.GetKey(KeyCode.E)) up = transform.up;
+        //else if (Input.GetKey(KeyCode.C)) up = -transform.up;
 
-        // Pitch up/down
-        if (Input.GetKey(KeyCode.UpArrow)) pitch = 1f;
-        else if (Input.GetKey(KeyCode.DownArrow)) pitch = -1f;
+        //// Pitch up/down
+        //if (Input.GetKey(KeyCode.UpArrow)) pitch = 1f;
+        //else if (Input.GetKey(KeyCode.DownArrow)) pitch = -1f;
 
-        // Turn left/right
-        if (Input.GetKey(KeyCode.LeftArrow)) yaw = -1f;
-        else if (Input.GetKey(KeyCode.RightArrow)) yaw = 1f;
+        //// Turn left/right
+        //if (Input.GetKey(KeyCode.LeftArrow)) yaw = -1f;
+        //else if (Input.GetKey(KeyCode.RightArrow)) yaw = 1f;
+
+        float y = Input.GetAxis("Mouse X") * yawSpeed;
+        rotX += Input.GetAxis("Mouse Y") * pitchSpeed;
+
+        //clamp the vertical rotation
+        rotX = Mathf.Clamp(rotX, -90, 90);
+
+        //rotate the camera
+        transform.eulerAngles = new Vector3(-rotX, transform.eulerAngles.y + y, 0);
 
         // Combine the movement vectors and normalize
         Vector3 combined = (forward + left + up).normalized;

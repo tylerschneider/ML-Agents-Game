@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour
     [Tooltip("The main camera for the scene")]
     public Camera mainCamera;
 
+    //public GameManager ring;
+
     // When the game timer started
     private float gameTimerStartTime;
 
@@ -143,6 +145,7 @@ public class GameManager : MonoBehaviour
     /// <returns>IEnumerator</returns>
     private IEnumerator StartGame()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         // Set the state to "preparing"
         State = GameState.Preparing;
 
@@ -181,6 +184,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void EndGame()
     {
+        Cursor.lockState = CursorLockMode.None;
         // Set the game state to "game over"
         State = GameState.Gameover;
 
