@@ -122,6 +122,50 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &182481959
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 182481960}
+  - component: {fileID: 182481961}
+  m_Layer: 0
+  m_Name: Spawn Zone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &182481960
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182481959}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2140659368}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &182481961
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182481959}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &889269273
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +265,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2140659368}
     m_Modifications:
+    - target: {fileID: 667204979936367788, guid: ee5d7605796823e44b0821e269dced5d,
+        type: 3}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6413310858512371299, guid: ee5d7605796823e44b0821e269dced5d,
         type: 3}
       propertyPath: m_BehaviorType
@@ -286,6 +335,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8005050037668528862, guid: ee5d7605796823e44b0821e269dced5d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8837842641453836708, guid: ee5d7605796823e44b0821e269dced5d,
         type: 3}
       propertyPath: trainingMode
@@ -308,18 +362,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ee5d7605796823e44b0821e269dced5d, type: 3}
---- !u!114 &1259047761 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8837842641453836708, guid: ee5d7605796823e44b0821e269dced5d,
-    type: 3}
-  m_PrefabInstance: {fileID: 1259047760}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d49b51b591c1e24989a4633a2f9dce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1362080555
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -584,8 +626,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f71f52565b690444fbd3d720f6d34b07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoop: {fileID: 0}
-  hoopNum: 0
+  hoop: {fileID: 5580154795004736669, guid: 0eef7c61391345740bccfbbdb46d8387, type: 3}
+  hoopNum: 12
+  spawnZone: {fileID: 0}
+  hoops: []
 --- !u!1001 &1705181174
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -660,18 +704,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ee5d7605796823e44b0821e269dced5d, type: 3}
---- !u!114 &1705181175 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8837842641453836708, guid: ee5d7605796823e44b0821e269dced5d,
-    type: 3}
-  m_PrefabInstance: {fileID: 1705181174}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d49b51b591c1e24989a4633a2f9dce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1762815118
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,12 +733,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30a025a073fb13e4f8797a3b5aaaecc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxNectar: 20
+  maxPoints: 8
   timerAmount: 120
   uiController: {fileID: 1362080556}
-  player: {fileID: 1259047761}
-  opponent: {fileID: 1705181175}
-  flowerArea: {fileID: 2140659366}
+  player: {fileID: 0}
+  opponent: {fileID: 0}
+  hoopArea: {fileID: 0}
   mainCamera: {fileID: 1921197055}
 --- !u!4 &1762815120
 Transform:
@@ -916,18 +948,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 423815a9aec87fb48bbb6f0f35a66653, type: 3}
---- !u!114 &2140659366 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2095208287674135869, guid: 423815a9aec87fb48bbb6f0f35a66653,
-    type: 3}
-  m_PrefabInstance: {fileID: 2140659365}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bad937970c11b540b59250614bf8fe0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &2140659368 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8703149456917459529, guid: 423815a9aec87fb48bbb6f0f35a66653,

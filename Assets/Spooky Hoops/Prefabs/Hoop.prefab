@@ -12,9 +12,11 @@ GameObject:
   - component: {fileID: 8184370937492955522}
   - component: {fileID: 6228563259194905928}
   - component: {fileID: 1926614329976615965}
+  - component: {fileID: 9034514588314781517}
+  - component: {fileID: 7083322449834616684}
   m_Layer: 0
   m_Name: Hoop
-  m_TagString: Untagged
+  m_TagString: target
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -92,3 +94,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ce90857a76132e4093e9e7af36d67f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &9034514588314781517
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5580154795004736669}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.015, y: 0.015, z: 0.001}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!64 &7083322449834616684
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5580154795004736669}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8803937527578110353, guid: 9a8ea3df1e8f11e4c8aca48c8dc3e542, type: 3}
