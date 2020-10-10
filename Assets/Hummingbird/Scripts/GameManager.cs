@@ -7,7 +7,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [Tooltip("Game ends when an agent collects this much nectar")]
-    public float maxNectar = 8f;
+    public float maxPoints = 8f;
 
     [Tooltip("Game ends after this many seconds have elapsed")]
     public float timerAmount = 60f;
@@ -15,17 +15,20 @@ public class GameManager : MonoBehaviour
     [Tooltip("The UI Controller")]
     public UIController uiController;
 
-    [Tooltip("The player hummingbird")]
-    public HummingbirdAgent player;
+    [Tooltip("The player witch")]
+    public Witch player;
 
-    [Tooltip("The ML-Agent opponent hummingbird")]
-    public HummingbirdAgent opponent;
+    [Tooltip("The ML-Agent opponent witch")]
+    public Witch opponent;
 
-    [Tooltip("The flower area")]
-    public FlowerArea flowerArea;
+    [Tooltip("The hoop area")]
+    //public FlowerArea flowerArea;
+    public HoopSpawner hoopArea;
 
     [Tooltip("The main camera for the scene")]
     public Camera mainCamera;
+
+    //public GameManager ring;
 
     // When the game timer started
     private float gameTimerStartTime;
@@ -126,7 +129,7 @@ public class GameManager : MonoBehaviour
         opponent.agentCamera.gameObject.SetActive(false); // Never turn this back on
 
         // Reset the flowers
-        flowerArea.ResetFlowers();
+        hoopArea.ResetHoops();
 
         // Reset the agents
         player.OnEpisodeBegin();
@@ -143,6 +146,7 @@ public class GameManager : MonoBehaviour
     /// <returns>IEnumerator</returns>
     private IEnumerator StartGame()
     {
+       // Cursor.lockState = CursorLockMode.Locked;
         // Set the state to "preparing"
         State = GameState.Preparing;
 
@@ -181,6 +185,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void EndGame()
     {
+        //Cursor.lockState = CursorLockMode.None;
         // Set the game state to "game over"
         State = GameState.Gameover;
 
@@ -188,8 +193,8 @@ public class GameManager : MonoBehaviour
         player.FreezeAgent();
         opponent.FreezeAgent();
 
-        // Update banner text depending on win/lose
-        if (player.NectarObtained >= opponent.NectarObtained )
+        //Update banner text depending on win/ lose
+        if (player.pointsEarned >= opponent.pointsEarned)
         {
             uiController.ShowBanner("You win!");
         }
@@ -211,16 +216,16 @@ public class GameManager : MonoBehaviour
         {
             // Check to see if time has run out or either agent got the max nectar amount
             if (TimeRemaining <= 0f ||
-                player.NectarObtained >= maxNectar ||
-                opponent.NectarObtained >= maxNectar)
+                player.pointsEarned >= maxPoints ||
+                opponent.pointsEarned >= maxPoints)
             {
                 EndGame();
             }
 
             // Update the timer and nectar progress bars
             uiController.SetTimer(TimeRemaining);
-            uiController.SetPlayerNectar(player.NectarObtained / maxNectar);
-            uiController.SetOpponentNectar(opponent.NectarObtained / maxNectar);
+            uiController.SetPlayerNectar(player.pointsEarned / maxPoints);
+            uiController.SetOpponentNectar(opponent.pointsEarned / maxPoints);
         }
         else if (State == GameState.Preparing || State == GameState.Gameover)
         {
