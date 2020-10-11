@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
@@ -31,9 +32,6 @@ public class Witch : Agent
     // The rigidbody of the agent
     new private Rigidbody rigidbody;
 
-    // The flower area that the agent is in
-    //private FlowerArea flowerArea;
-
     public HoopSpawner hoopArea;
 
     //The nearest hoop to the agent
@@ -49,13 +47,13 @@ public class Witch : Agent
     // Maximum angle that the bird can pitch up or down
     private const float MaxPitchAngle = 80f;
 
-    // Maximum distance from the beak tip to accept nectar collision
-    //private const float BeakTipRadius = 0.008f;
-
     // Whether the agent is frozen (intentionally not flying)
     private bool frozen = false;
 
     private float rotX;
+
+    private float currentDistanceToHoop;
+    private float lastDistanceToHoop;
 
     /// <summary>
     /// The amount of nectar the agent has obtained this episode
@@ -81,7 +79,8 @@ public class Witch : Agent
         if (trainingMode)
         {
             // Only reset flowers in training when there is one agent per area
-            //flowerArea.ResetFlowers();
+            hoopArea.ResetHoops();
+            UpdateNearestHoop();
         }
 
         // Reset nectar obtained
@@ -288,7 +287,7 @@ public class Witch : Agent
                 Hoop randomHoopScript = randomHoop.GetComponent<Hoop>();
 
                 // Position 10 to 20 cm in front of the flower
-                float distanceFromFlower = UnityEngine.Random.Range(.5f, 1f);
+                float distanceFromFlower = UnityEngine.Random.Range(.3f, .4f);
                 potentialPosition = randomHoop.transform.position + randomHoopScript.HoopUpVector * distanceFromFlower;
 
                 // Point beak at flower (bird's head is center of transform)
@@ -319,10 +318,11 @@ public class Witch : Agent
 
             Collider[] colliders = Physics.OverlapSphere(potentialPosition, 0.05f);
 
-            
+
 
             // Safe position has been found if no colliders are overlapped
             safePositionFound = colliders.Length == 1;
+            lastDistanceToHoop = Vector3.Distance(transform.position, nearestHoop.transform.position);
         }
 
         Debug.Assert(safePositionFound, "Could not find a safe position to spawn");
@@ -360,24 +360,6 @@ public class Witch : Agent
             }
         }
     }
-
-    ///// <summary>
-    ///// Called when the agent's collider enters a trigger collider
-    ///// </summary>
-    ///// <param name="other">The trigger collider</param>
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    TriggerEnterOrStay(other);
-    //}
-
-    ///// <summary>
-    ///// Called when the agent's collider stays in a trigger collider
-    ///// </summary>
-    ///// <param name="other">The trigger collider</param>
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    TriggerEnterOrStay(other);
-    //}
 
     /// <summary>
     /// Handles when the agen'ts collider enters or stays in a trigger collider
@@ -427,6 +409,8 @@ public class Witch : Agent
         // Draw a line from the beak tip to the nearest hoop
         if (nearestHoop != null)
             Debug.DrawLine(witchTransform.position, nearestHoopScript.RingCenterPosition, Color.green);
+
+
     }
 
     /// <summary>
@@ -434,8 +418,24 @@ public class Witch : Agent
     /// </summary>
     private void FixedUpdate()
     {
-        //// Avoids scenario where nearest flower nectar is stolen by opponent and not updated
-        if (nearestHoop != null)
+        // Avoids scenario where nearest flower nectar is stolen by opponent and not updated
+        if (nearestHoop == null)
             UpdateNearestHoop();
+
+        if (trainingMode && nearestHoop != null)
+        {
+            currentDistanceToHoop = Vector3.Distance(transform.position, nearestHoop.transform.position);
+
+            if (currentDistanceToHoop > lastDistanceToHoop)
+            {
+                AddReward(-0.001f);
+            }
+            else
+            {
+                AddReward(0.001f);
+            }
+
+            lastDistanceToHoop = currentDistanceToHoop;
+        }
     }
 }

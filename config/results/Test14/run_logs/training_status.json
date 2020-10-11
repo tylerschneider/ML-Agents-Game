@@ -1,0 +1,23 @@
+{
+    "Witch": {
+        "checkpoints": [
+            {
+                "steps": 138840,
+                "file_path": "results\\Test14\\Witch\\Witch-138840.nn",
+                "reward": -0.22592592592592592,
+                "creation_time": 1602370617.3288424
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 138840,
+            "file_path": "results\\Test14\\Witch.nn",
+            "reward": -0.22592592592592592,
+            "creation_time": 1602370617.3288424
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.1.0",
+        "mlagents_version": "0.20.0",
+        "tensorflow_version": "2.3.0"
+    }
+}

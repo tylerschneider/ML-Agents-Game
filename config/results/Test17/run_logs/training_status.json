@@ -1,0 +1,29 @@
+{
+    "Witch": {
+        "checkpoints": [
+            {
+                "steps": 499920,
+                "file_path": "results\\Test17\\Witch\\Witch-499920.nn",
+                "reward": null,
+                "creation_time": 1602384206.788299
+            },
+            {
+                "steps": 701760,
+                "file_path": "results\\Test17\\Witch\\Witch-701760.nn",
+                "reward": null,
+                "creation_time": 1602385103.0326405
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 701760,
+            "file_path": "results\\Test17\\Witch.nn",
+            "reward": null,
+            "creation_time": 1602385103.0326405
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.1.0",
+        "mlagents_version": "0.20.0",
+        "tensorflow_version": "2.3.0"
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "Witch": {
+        "checkpoints": [
+            {
+                "steps": 15000,
+                "file_path": "results\\Test11\\Witch\\Witch-15000.nn",
+                "reward": 0.0,
+                "creation_time": 1602364653.6117263
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 15000,
+            "file_path": "results\\Test11\\Witch.nn",
+            "reward": 0.0,
+            "creation_time": 1602364653.6117263
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.1.0",
+        "mlagents_version": "0.20.0",
+        "tensorflow_version": "2.3.0"
+    }
+}
