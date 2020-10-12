@@ -1,0 +1,2 @@
+model_checkpoint_path: "Hummingbird-49024.ckpt"
+all_model_checkpoint_paths: "Hummingbird-49024.ckpt"

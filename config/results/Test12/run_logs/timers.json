@@ -1,0 +1,42 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1602364707",
+        "python_version": "3.8.3 (default, Jul  2 2020, 17:30:36) [MSC v.1916 64 bit (AMD64)]",
+        "command_line_arguments": "C:\\Users\\Justi\\anaconda3\\Scripts\\mlagents-learn ./trainer_config.yaml --run-id Test12",
+        "mlagents_version": "0.20.0",
+        "mlagents_envs_version": "0.20.0",
+        "communication_protocol_version": "1.1.0",
+        "tensorflow_version": "2.3.0",
+        "numpy_version": "1.18.5",
+        "end_time_seconds": "1602364772"
+    },
+    "total": 64.61057690000001,
+    "count": 1,
+    "self": 0.32858420000000876,
+    "children": {
+        "run_training.setup": {
+            "total": 0.00938440000000007,
+            "count": 1,
+            "self": 0.00938440000000007
+        },
+        "TrainerController.start_learning": {
+            "total": 64.2726083,
+            "count": 1,
+            "self": 0.00047809999999515185,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 64.2716341,
+                    "count": 1,
+                    "self": 64.2716341
+                },
+                "TrainerController._save_models": {
+                    "total": 0.0004961000000065496,
+                    "count": 1,
+                    "self": 0.0004961000000065496
+                }
+            }
+        }
+    }
+}

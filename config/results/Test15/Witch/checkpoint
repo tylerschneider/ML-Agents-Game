@@ -1,0 +1,6 @@
+model_checkpoint_path: "Witch-2001840.ckpt"
+all_model_checkpoint_paths: "Witch-499920.ckpt"
+all_model_checkpoint_paths: "Witch-999968.ckpt"
+all_model_checkpoint_paths: "Witch-1499984.ckpt"
+all_model_checkpoint_paths: "Witch-1999920.ckpt"
+all_model_checkpoint_paths: "Witch-2001840.ckpt"
