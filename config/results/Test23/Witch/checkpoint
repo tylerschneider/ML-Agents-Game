@@ -1,0 +1,2 @@
+model_checkpoint_path: "Witch-35760.ckpt"
+all_model_checkpoint_paths: "Witch-35760.ckpt"

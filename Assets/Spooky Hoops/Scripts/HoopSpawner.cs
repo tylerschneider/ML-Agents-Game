@@ -11,7 +11,6 @@ public class HoopSpawner : MonoBehaviour
     public int hoopNum;
     public Collider spawnZone;
 
-    [HideInInspector]
     public List<GameObject> hoops;
 
     private void Start()
@@ -42,6 +41,13 @@ public class HoopSpawner : MonoBehaviour
             {
                 if(Vector3.Distance(hoop.transform.position, hoopPosition) > 10)
                 {
+                    return false;
+                }
+                Collider[] colliders = Physics.OverlapSphere(hoopPosition, 0.05f);
+
+                if(colliders.Length >= 2)
+                {
+                    Debug.Log("Collision presented");
                     return false;
                 }
             }
