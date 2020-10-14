@@ -209,20 +209,20 @@ public class Witch : Agent
         else if (Input.GetKey(KeyCode.S)) forward = -transform.forward;
 
         //// Left/right
-        if (Input.GetKey(KeyCode.A)) left = -transform.right;
-        else if (Input.GetKey(KeyCode.D)) left = transform.right;
+        //if (Input.GetKey(KeyCode.A)) left = -transform.right;
+        //else if (Input.GetKey(KeyCode.D)) left = transform.right;
 
         // Up/down
-        if (Input.GetKey(KeyCode.E)) up = transform.up;
-        else if (Input.GetKey(KeyCode.C)) up = -transform.up;
+        if (Input.GetKey(KeyCode.Space)) up = transform.up;
+        else if (Input.GetKey(KeyCode.LeftShift)) up = -transform.up;
 
         // Pitch up/down
         //if (Input.GetKey(KeyCode.UpArrow)) pitch = 1f;
         //else if (Input.GetKey(KeyCode.DownArrow)) pitch = -1f;
 
         // Turn left/right
-        //if (Input.GetKey(KeyCode.LeftArrow)) yaw = -1f;
-        //else if (Input.GetKey(KeyCode.RightArrow)) yaw = 1f;
+        //if (Input.GetKey(KeyCode.A)) yaw = -1f;
+        //else if (Input.GetKey(KeyCode.D)) yaw = 1f;
 
         //float y = Input.GetAxis("Mouse X") * yawSpeed;
         //rotX += Input.GetAxis("Mouse Y") * pitchSpeed;
