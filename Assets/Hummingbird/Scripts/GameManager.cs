@@ -146,9 +146,11 @@ public class GameManager : MonoBehaviour
     /// <returns>IEnumerator</returns>
     private IEnumerator StartGame()
     {
-       // Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.lockState = CursorLockMode.Locked;
         // Set the state to "preparing"
         State = GameState.Preparing;
+        Cursor.lockState = CursorLockMode.Locked;
+
 
         // Update the UI (hide it)
         uiController.ShowBanner("");
@@ -188,6 +190,7 @@ public class GameManager : MonoBehaviour
         //Cursor.lockState = CursorLockMode.None;
         // Set the game state to "game over"
         State = GameState.Gameover;
+        Cursor.lockState = CursorLockMode.None;
 
         // Freeze the agents
         player.FreezeAgent();
