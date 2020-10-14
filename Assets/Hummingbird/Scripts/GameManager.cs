@@ -149,8 +149,7 @@ public class GameManager : MonoBehaviour
         // Cursor.lockState = CursorLockMode.Locked;
         // Set the state to "preparing"
         State = GameState.Preparing;
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
 
         // Update the UI (hide it)

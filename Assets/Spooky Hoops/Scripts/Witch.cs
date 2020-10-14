@@ -55,6 +55,12 @@ public class Witch : Agent
     private float currentDistanceToHoop;
     private float lastDistanceToHoop;
 
+    public float speedH = 5.0f;
+    public float speedV = 5.0f;
+
+    private float yaw = 0.0f;
+    private float pitch = 0.0f;
+
     /// <summary>
     /// The amount of nectar the agent has obtained this episode
     /// </summary>
@@ -410,9 +416,10 @@ public class Witch : Agent
         if (nearestHoop != null)
             Debug.DrawLine(witchTransform.position, nearestHoopScript.RingCenterPosition, Color.green);
 
-        float mouseX = (Input.mousePosition.x / Screen.width) - 0.5f;
-        float mouseY = (Input.mousePosition.y / Screen.height) - 0.5f;
-        transform.localRotation = Quaternion.Euler(new Vector4(-1f * (mouseY * 180f), mouseX * 360f, transform.localRotation.z));
+        yaw += speedH * Input.GetAxis("Mouse X");
+        pitch -= speedV * Input.GetAxis("Mouse Y");
+
+        transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
     }
 
     /// <summary>
