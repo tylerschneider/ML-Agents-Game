@@ -198,8 +198,8 @@ public class Witch : Agent
         Vector3 forward = Vector3.zero;
         Vector3 left = Vector3.zero;
         Vector3 up = Vector3.zero;
-        float pitch = 0f;
-        float yaw = 0f;
+        //float pitch = 0f;
+        //float yaw = 0f;
 
         // Convert keyboard inputs to movement and turning
         // All values should be between -1 and +1
@@ -217,12 +217,12 @@ public class Witch : Agent
         else if (Input.GetKey(KeyCode.C)) up = -transform.up;
 
         // Pitch up/down
-        if (Input.GetKey(KeyCode.UpArrow)) pitch = 1f;
-        else if (Input.GetKey(KeyCode.DownArrow)) pitch = -1f;
+        //if (Input.GetKey(KeyCode.UpArrow)) pitch = 1f;
+        //else if (Input.GetKey(KeyCode.DownArrow)) pitch = -1f;
 
         // Turn left/right
-        if (Input.GetKey(KeyCode.LeftArrow)) yaw = -1f;
-        else if (Input.GetKey(KeyCode.RightArrow)) yaw = 1f;
+        //if (Input.GetKey(KeyCode.LeftArrow)) yaw = -1f;
+        //else if (Input.GetKey(KeyCode.RightArrow)) yaw = 1f;
 
         //float y = Input.GetAxis("Mouse X") * yawSpeed;
         //rotX += Input.GetAxis("Mouse Y") * pitchSpeed;
@@ -240,8 +240,8 @@ public class Witch : Agent
         actionsOut[0] = combined.x;
         actionsOut[1] = combined.y;
         actionsOut[2] = combined.z;
-        actionsOut[3] = pitch;
-        actionsOut[4] = yaw;
+        //actionsOut[3] = pitch;
+        //actionsOut[4] = yaw;
     }
 
     /// <summary>
@@ -410,7 +410,9 @@ public class Witch : Agent
         if (nearestHoop != null)
             Debug.DrawLine(witchTransform.position, nearestHoopScript.RingCenterPosition, Color.green);
 
-
+        float mouseX = (Input.mousePosition.x / Screen.width) - 0.5f;
+        float mouseY = (Input.mousePosition.y / Screen.height) - 0.5f;
+        transform.localRotation = Quaternion.Euler(new Vector4(-1f * (mouseY * 180f), mouseX * 360f, transform.localRotation.z));
     }
 
     /// <summary>
