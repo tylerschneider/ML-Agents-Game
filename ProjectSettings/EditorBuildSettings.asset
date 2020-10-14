@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Spooky Hoops/Scenes/Spooky Island Final.unity
+    guid: 316ee9fd2e77b0546966295c09bbef70
   m_configObjects: {}
