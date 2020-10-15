@@ -6,6 +6,8 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
     [Tooltip("Game ends when an agent collects this much nectar")]
     public float maxPoints = 8f;
 
@@ -27,6 +29,9 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("The main camera for the scene")]
     public Camera mainCamera;
+
+    public AudioSource startSound;
+    private float volume;
 
     //public GameManager ring;
 
@@ -81,6 +86,8 @@ public class GameManager : MonoBehaviour
         }
         else if (State == GameState.MainMenu)
         {
+            startSound.Play();
+
             // In the MainMenu state, button click should start the game
             StartCoroutine(StartGame());
         }
@@ -95,11 +102,18 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        if(!Instance)
+        {
+            Instance = this;
+        }
+
         // Subscribe to button click events from the UI
         uiController.OnButtonClicked += ButtonClicked;
 
         // Start the main menu
         MainMenu();
+
+        volume = GetComponent<AudioSource>().volume;    
     }
 
     /// <summary>
@@ -178,6 +192,7 @@ public class GameManager : MonoBehaviour
         // Unfreeze the agents
         player.UnfreezeAgent();
         opponent.UnfreezeAgent();
+
     }
 
     /// <summary>
@@ -196,11 +211,11 @@ public class GameManager : MonoBehaviour
         //Update banner text depending on win/ lose
         if (player.pointsEarned >= opponent.pointsEarned)
         {
-            uiController.ShowBanner("You win!");
+            uiController.ShowBanner("You won!");
         }
         else
         {
-            uiController.ShowBanner("ML-Agent wins!");
+            uiController.ShowBanner("You lost!");
         }
 
         // Update button text
@@ -242,5 +257,13 @@ public class GameManager : MonoBehaviour
             uiController.SetOpponentNectar(0f);
         }
 
+        if(startSound.isPlaying)
+        {
+            GetComponent<AudioSource>().volume = volume/2;
+        }
+        else if(GetComponent<AudioSource>().volume < volume)
+        {
+            GetComponent<AudioSource>().volume += 0.05f;
+        }
     }
 }

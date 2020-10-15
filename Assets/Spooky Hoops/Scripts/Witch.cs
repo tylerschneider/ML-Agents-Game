@@ -63,6 +63,9 @@ public class Witch : Agent
     private float yaw = 0.0f;
     private float pitch = 0.0f;
 
+    public GameObject candy1;
+    public GameObject candy2;
+
     /// <summary>
     /// The amount of nectar the agent has obtained this episode
     /// </summary>
@@ -379,7 +382,11 @@ public class Witch : Agent
         // Check if agent is colliding with nectar
         if (collider.CompareTag("target"))
         {
+            Instantiate(candy1, collider.transform.position, Quaternion.identity);
+            Instantiate(candy2, collider.transform.position, Quaternion.identity);
+
             Destroy(collider.gameObject);
+
             pointsEarned++;
 
 
@@ -419,7 +426,7 @@ public class Witch : Agent
         if (nearestHoop != null)
             Debug.DrawLine(witchTransform.position, nearestHoopScript.RingCenterPosition, Color.green);
 
-        if (humanPlayer)
+        if (humanPlayer && GameManager.Instance.State == GameManager.GameState.Playing || humanPlayer && GameManager.Instance.State == GameManager.GameState.Preparing)
         {
             yaw += speedH * Input.GetAxis("Mouse X");
             pitch -= speedV * Input.GetAxis("Mouse Y");

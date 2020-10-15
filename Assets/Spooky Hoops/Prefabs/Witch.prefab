@@ -224,7 +224,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -423,6 +423,8 @@ MonoBehaviour:
   agentCamera: {fileID: 7978194192295563358}
   trainingMode: 1
   hoopArea: {fileID: 0}
+  speedH: 5
+  speedV: 5
 --- !u!1001 &7307733586259215414
 PrefabInstance:
   m_ObjectHideFlags: 0
