@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
     /// <returns>IEnumerator</returns>
     private IEnumerator StartGame()
     {
-       // Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
         // Set the state to "preparing"
         State = GameState.Preparing;
 
@@ -185,7 +185,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void EndGame()
     {
-        //Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.None;
         // Set the game state to "game over"
         State = GameState.Gameover;
 

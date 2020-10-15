@@ -55,6 +55,14 @@ public class Witch : Agent
     private float currentDistanceToHoop;
     private float lastDistanceToHoop;
 
+    private bool humanPlayer = false;
+
+    public float speedH = 5.0f;
+    public float speedV = 5.0f;
+
+    private float yaw = 0.0f;
+    private float pitch = 0.0f;
+
     /// <summary>
     /// The amount of nectar the agent has obtained this episode
     /// </summary>
@@ -194,6 +202,7 @@ public class Witch : Agent
     /// <param name="actionsOut">And output action array</param>
     public override void Heuristic(float[] actionsOut)
     {
+        humanPlayer = true;
         // Create placeholders for all movement/turning
         Vector3 forward = Vector3.zero;
         Vector3 left = Vector3.zero;
@@ -208,21 +217,21 @@ public class Witch : Agent
         if (Input.GetKey(KeyCode.W)) forward = transform.forward;
         else if (Input.GetKey(KeyCode.S)) forward = -transform.forward;
 
-        //// Left/right
-        if (Input.GetKey(KeyCode.A)) left = -transform.right;
-        else if (Input.GetKey(KeyCode.D)) left = transform.right;
+        ////// Left/right
+        //if (Input.GetKey(KeyCode.A)) left = -transform.right;
+        //else if (Input.GetKey(KeyCode.D)) left = transform.right;
 
         // Up/down
         if (Input.GetKey(KeyCode.E)) up = transform.up;
         else if (Input.GetKey(KeyCode.C)) up = -transform.up;
 
-        // Pitch up/down
-        if (Input.GetKey(KeyCode.UpArrow)) pitch = 1f;
-        else if (Input.GetKey(KeyCode.DownArrow)) pitch = -1f;
+        //// Pitch up/down
+        //if (Input.GetKey(KeyCode.UpArrow)) pitch = 1f;
+        //else if (Input.GetKey(KeyCode.DownArrow)) pitch = -1f;
 
-        // Turn left/right
-        if (Input.GetKey(KeyCode.LeftArrow)) yaw = -1f;
-        else if (Input.GetKey(KeyCode.RightArrow)) yaw = 1f;
+        //// Turn left/right
+        //if (Input.GetKey(KeyCode.LeftArrow)) yaw = -1f;
+        //else if (Input.GetKey(KeyCode.RightArrow)) yaw = 1f;
 
         //float y = Input.GetAxis("Mouse X") * yawSpeed;
         //rotX += Input.GetAxis("Mouse Y") * pitchSpeed;
@@ -240,8 +249,8 @@ public class Witch : Agent
         actionsOut[0] = combined.x;
         actionsOut[1] = combined.y;
         actionsOut[2] = combined.z;
-        actionsOut[3] = pitch;
-        actionsOut[4] = yaw;
+        //actionsOut[3] = pitch;
+        //actionsOut[4] = yaw;
     }
 
     /// <summary>
@@ -410,7 +419,13 @@ public class Witch : Agent
         if (nearestHoop != null)
             Debug.DrawLine(witchTransform.position, nearestHoopScript.RingCenterPosition, Color.green);
 
+        if (humanPlayer)
+        {
+            yaw += speedH * Input.GetAxis("Mouse X");
+            pitch -= speedV * Input.GetAxis("Mouse Y");
 
+            transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
+        }
     }
 
     /// <summary>
