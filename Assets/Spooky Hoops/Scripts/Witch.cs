@@ -50,21 +50,27 @@ public class Witch : Agent
     // Whether the agent is frozen (intentionally not flying)
     private bool frozen = false;
 
-    private float rotX;
-
+    //use to calculate if the agent is moving towards or away from the nearest hoop
     private float currentDistanceToHoop;
     private float lastDistanceToHoop;
 
+    //Boolian used to check if the agent is human
     private bool humanPlayer = false;
 
+    //Rotation speed for the camera
     public float speedH = 5.0f;
     public float speedV = 5.0f;
 
+    //Rotation value for the camera
     private float yaw = 0.0f;
     private float pitch = 0.0f;
 
+    //Candy game objects
     public GameObject candy1;
     public GameObject candy2;
+
+    //Sound player for when collecting the hoops
+    private AudioSource soundPlayer;
 
     /// <summary>
     /// The amount of nectar the agent has obtained this episode
@@ -76,8 +82,10 @@ public class Witch : Agent
     /// </summary>
     public override void Initialize()
     {
+        //Obtain values for private variables
         rigidbody = GetComponent<Rigidbody>();
-        //flowerArea = GetComponentInParent<FlowerArea>();
+        soundPlayer = GetComponent<AudioSource>();
+
         // If not training mode, no max step, play forever
         if (!trainingMode) MaxStep = 0;
     }
@@ -89,30 +97,30 @@ public class Witch : Agent
     {
         if (trainingMode)
         {
-            // Only reset flowers in training when there is one agent per area
+            //Reset the hoops in the training area
             hoopArea.ResetHoops();
-            UpdateNearestHoop();
+           // UpdateNearestHoop();
         }
 
-        // Reset nectar obtained
+        // Reset points obtained
         pointsEarned = 0f;
 
         // Zero out velocities so that movement stops before a new episode begins
         rigidbody.velocity = Vector3.zero;
         rigidbody.angularVelocity = Vector3.zero;
 
-        // Default to spawning in front of a flower
+        // Default to spawning in front of a hoop
         bool inFontofHoop = true;
         if (trainingMode)
         {
-            // Spawn in front of flower 50% of the time during training
+            // Spawn in front a hoop 50% of the time during training
             inFontofHoop = UnityEngine.Random.value > .5f;
         }
 
         // Move the agent to a new random position
         MoveToSafeRandomPosition(inFontofHoop);
 
-        // Recalculate the nearest flower now that the agent has moved
+        // Recalculate the nearest hoop now that the agent has moved
         UpdateNearestHoop();
     }
 
@@ -167,7 +175,7 @@ public class Witch : Agent
     /// <param name="sensor">The vector sensor</param>
     public override void CollectObservations(VectorSensor sensor)
     {
-        // If nearestFlower is null, observe an empty array and return early
+        // If nearestHoop is null, observe an empty array and return early
         if (nearestHoop == null)
         {
             sensor.AddObservation(new float[10]);
@@ -177,21 +185,21 @@ public class Witch : Agent
         // Observe the agent's local rotation (4 observations)
         sensor.AddObservation(transform.localRotation.normalized);
 
-        // Get a vector from the beak tip to the nearest flower
+        // Get a vector from the beak tip to the nearest hoop
         Vector3 toRing = nearestHoopScript.RingCenterPosition - witchTransform.position;
 
-        // Observe a normalized vector pointing to the nearest flower (3 observations)
+        // Observe a normalized vector pointing to the nearest hoop (3 observations)
         sensor.AddObservation(toRing.normalized);
 
         // Observe a dot product that indicates whether the beak tip is in front of the flower (1 observation)
-        // (+1 means that the beak tip is directly in front of the flower, -1 means directly behind)
+        // (+1 means that the agent is directly in front of the hoop, -1 means directly behind)
         sensor.AddObservation(Vector3.Dot(toRing.normalized, -nearestHoopScript.HoopUpVector.normalized));
 
-        // Observe a dot product that indicates whether the beak is pointing toward the flower (1 observation)
-        // (+1 means that the beak is pointing directly at the flower, -1 means directly away)
+        // Observe a dot product that indicates whether the agent is pointing toward the hoop (1 observation)
+        // (+1 means that the agent is pointing directly at the hoop, -1 means directly away)
         sensor.AddObservation(Vector3.Dot(witchTransform.forward.normalized, -nearestHoopScript.HoopUpVector.normalized));
 
-        // Observe the relative distance from the beak tip to the flower (1 observation)
+        // Observe the relative distance from the agent to the hoop (1 observation)
         sensor.AddObservation(toRing.magnitude / FlowerArea.AreaDiameter);
 
         // 10 total observations
@@ -210,8 +218,8 @@ public class Witch : Agent
         Vector3 forward = Vector3.zero;
         Vector3 left = Vector3.zero;
         Vector3 up = Vector3.zero;
-        float pitch = 0f;
-        float yaw = 0f;
+        //float pitch = 0f;
+        //float yaw = 0f;
 
         // Convert keyboard inputs to movement and turning
         // All values should be between -1 and +1
@@ -261,9 +269,11 @@ public class Witch : Agent
     /// </summary>
     public void FreezeAgent()
     {
-        //Debug.Assert(trainingMode == false, "Freeze/Unfreeze not supported in training");
+        Debug.Assert(trainingMode == false, "Freeze/Unfreeze not supported in training");
         frozen = true;
         rigidbody.Sleep();
+
+        Debug.Log("Agent frozen");
     }
 
     /// <summary>
@@ -271,17 +281,19 @@ public class Witch : Agent
     /// </summary>
     public void UnfreezeAgent()
     {
-        //Debug.Assert(trainingMode == false, "Freeze/Unfreeze not supported in training");
+        Debug.Assert(trainingMode == false, "Freeze/Unfreeze not supported in training");
         frozen = false;
         rigidbody.WakeUp();
+
+        Debug.Log("Agent unfrozen");
     }
 
     /// <summary>
     /// Move the agent to a safe random position (i.e. does not collide with anything)
-    /// If in front of flower, also point the beak at the flower
+    /// If in front of hoop, also point the agent at the hoop
     /// </summary>
-    /// <param name="inFrontOfFlower">Whether to choose a spot in front of a flower</param>
-    private void MoveToSafeRandomPosition(bool inFrontOfFlower)
+    /// <param name="inFrontOfFHoop">Whether to choose a spot in front of a flower</param>
+    private void MoveToSafeRandomPosition(bool inFrontOfFHoop)
     {
         bool safePositionFound = false;
         int attemptsRemaining = 200; // Prevent an infinite loop
@@ -292,17 +304,17 @@ public class Witch : Agent
         while (!safePositionFound && attemptsRemaining > 0)
         {
             attemptsRemaining--;
-            if (inFrontOfFlower)
+            if (inFrontOfFHoop)
             {
                 // Pick a random flower
                 GameObject randomHoop = hoopArea.hoops[UnityEngine.Random.Range(0, hoopArea.hoops.Count)];
                 Hoop randomHoopScript = randomHoop.GetComponent<Hoop>();
 
-                // Position 10 to 20 cm in front of the flower
+                // Position 30 to 40 cm in front of the hoop
                 float distanceFromFlower = UnityEngine.Random.Range(.3f, .4f);
                 potentialPosition = randomHoop.transform.position + randomHoopScript.HoopUpVector * distanceFromFlower;
 
-                // Point beak at flower (bird's head is center of transform)
+                // Point agent at hoop
                 Vector3 toHoop = randomHoopScript.RingCenterPosition - potentialPosition;
                 potentialRotation = Quaternion.LookRotation(toHoop, Vector3.up);
             }
@@ -327,16 +339,17 @@ public class Witch : Agent
             }
 
             // Check to see if the agent will collide with anything
-
             Collider[] colliders = Physics.OverlapSphere(potentialPosition, 0.05f);
 
-
-
-            // Safe position has been found if no colliders are overlapped
+            // Safe position has been found if only one collider overlapped
             safePositionFound = colliders.Length == 1;
+
+            //if statemate that is only active in training mode, used for recording the last known position to a hoop
+            if(trainingMode)
             lastDistanceToHoop = Vector3.Distance(transform.position, nearestHoop.transform.position);
         }
 
+        //If the loop is unable to find a safe space to spawn based on the collider check, exit the loop
         Debug.Assert(safePositionFound, "Could not find a safe position to spawn");
 
         // Set the position and rotation
@@ -353,17 +366,17 @@ public class Witch : Agent
         {
             if (nearestHoop == null && hoop != null)
             {
-                // No current nearest flower and this flower has nectar, so set to this flower
+                // No current nearest hoop, so set to this hoop
                 nearestHoop = hoop;
                 nearestHoopScript = nearestHoop.GetComponent<Hoop>();
             }
             else if (hoop != null)
             {
-                // Calculate distance to this flower and distance to the current nearest flower
+                // Calculate distance to this hoop and distance to the current nearest hoop
                 float distanceToFlower = Vector3.Distance(hoop.transform.position, witchTransform.position);
                 float distanceToCurrentNearestFlower = Vector3.Distance(nearestHoop.transform.position, witchTransform.position);
 
-                // If current nearest flower is empty OR this flower is closer, update the nearest flower
+                // If current nearest hoop is empty OR this flower is hoop, update the nearest flower
                 if (nearestHoop == null || distanceToFlower < distanceToCurrentNearestFlower)
                 {
                     nearestHoop = hoop;
@@ -379,7 +392,7 @@ public class Witch : Agent
     /// <param name="collider">The trigger collider</param>
     private void OnTriggerEnter(Collider collider)
     {
-        // Check if agent is colliding with nectar
+        // Check if agent is colliding with the middle of the hoop
         if (collider.CompareTag("target"))
         {
             Instantiate(candy1, collider.transform.position, Quaternion.identity);
@@ -389,14 +402,15 @@ public class Witch : Agent
 
             pointsEarned++;
 
+            soundPlayer.Play();
 
-            //focus on changing this
+            //Reward the agent for going through the hoop
             if (trainingMode)
             {
                 AddReward(5f);
             }
 
-            // If flower is empty, update the nearest flower
+            // If hoop is null, update the nearest hoop
             if (nearestHoop == null)
             {
                 UpdateNearestHoop();
@@ -422,10 +436,11 @@ public class Witch : Agent
     /// </summary>
     private void Update()
     {
-        // Draw a line from the beak tip to the nearest hoop
+        // Draw a line from the agent to the nearest hoop
         if (nearestHoop != null)
             Debug.DrawLine(witchTransform.position, nearestHoopScript.RingCenterPosition, Color.green);
 
+        //Rotate the player with the use of the mouse if the game has started
         if (humanPlayer && GameManager.Instance.State == GameManager.GameState.Playing || humanPlayer && GameManager.Instance.State == GameManager.GameState.Preparing)
         {
             yaw += speedH * Input.GetAxis("Mouse X");
@@ -440,23 +455,28 @@ public class Witch : Agent
     /// </summary>
     private void FixedUpdate()
     {
-        // Avoids scenario where nearest flower nectar is stolen by opponent and not updated
+        // Avoids scenario where nearest hoop is stolen by opponent and not updated
         if (nearestHoop == null)
             UpdateNearestHoop();
 
+        //if statement to check if the agent is in training mode and the nearest hoop is not null
         if (trainingMode && nearestHoop != null)
         {
+            //Calculate the current distance to the hoop
             currentDistanceToHoop = Vector3.Distance(transform.position, nearestHoop.transform.position);
 
+            //if the agent is closer to the hoop in this frame, then reward the agent
             if (currentDistanceToHoop > lastDistanceToHoop)
             {
                 AddReward(-0.001f);
             }
+            //if the agent is farther or the same distance from the hoop than the last frame, then punish the agent
             else
             {
                 AddReward(0.001f);
             }
 
+            //Update the last distance to hoop for a future check next frame
             lastDistanceToHoop = currentDistanceToHoop;
         }
     }

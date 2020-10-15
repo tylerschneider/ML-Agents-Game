@@ -24,16 +24,15 @@ public class GameManager : MonoBehaviour
     public Witch opponent;
 
     [Tooltip("The hoop area")]
-    //public FlowerArea flowerArea;
     public HoopSpawner hoopArea;
 
     [Tooltip("The main camera for the scene")]
     public Camera mainCamera;
 
+    [Tooltip("Sound played at the start of the game")]
     public AudioSource startSound;
+    //volume of the sound played
     private float volume;
-
-    //public GameManager ring;
 
     // When the game timer started
     private float gameTimerStartTime;
@@ -142,7 +141,7 @@ public class GameManager : MonoBehaviour
         player.agentCamera.gameObject.SetActive(false);
         opponent.agentCamera.gameObject.SetActive(false); // Never turn this back on
 
-        // Reset the flowers
+        // Reset the hoop
         hoopArea.ResetHoops();
 
         // Reset the agents
@@ -160,7 +159,9 @@ public class GameManager : MonoBehaviour
     /// <returns>IEnumerator</returns>
     private IEnumerator StartGame()
     {
+        //Lock the players cursor for better flying controlls with the mouse
         Cursor.lockState = CursorLockMode.Locked;
+
         // Set the state to "preparing"
         State = GameState.Preparing;
 
@@ -200,7 +201,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void EndGame()
     {
+        //Unlock the cursor so the player can press buttons on the UI
         Cursor.lockState = CursorLockMode.None;
+
         // Set the game state to "game over"
         State = GameState.Gameover;
 
@@ -257,6 +260,7 @@ public class GameManager : MonoBehaviour
             uiController.SetOpponentNectar(0f);
         }
 
+        //While the start up sound is playing, make sure the volume is at the right level
         if(startSound.isPlaying)
         {
             GetComponent<AudioSource>().volume = volume/2;
