@@ -25,6 +25,12 @@ public class UIController : MonoBehaviour
     [Tooltip("The button text")]
     public TextMeshProUGUI buttonText;
 
+    [Tooltip("The slider")]
+    public GameObject slider;
+
+    public GameObject topLeftPanel;
+    public GameObject topRightPanel;
+
     /// <summary>
     /// Delegate for a button click
     /// </summary>
@@ -79,6 +85,11 @@ public class UIController : MonoBehaviour
         bannerText.gameObject.SetActive(false);
     }
 
+    public void ShowSlider(bool set)
+    {
+        slider.SetActive(set);
+    }
+
     /// <summary>
     /// Sets the timer, if timeRemaining is negative, hides the text
     /// </summary>
@@ -89,6 +100,16 @@ public class UIController : MonoBehaviour
             timerText.text = timeRemaining.ToString("00");
         else
             timerText.text = "";
+    }
+
+    public void ShowPlayerPanel(bool set)
+    {
+        topLeftPanel.SetActive(set);
+    }
+
+    public void ShowOpponentPanel(bool set)
+    {
+        topRightPanel.SetActive(set);
     }
 
     /// <summary>

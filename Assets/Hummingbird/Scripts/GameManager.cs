@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Manages game logic and controls the UI
@@ -8,8 +9,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    [Tooltip("Game ends when an agent collects this much nectar")]
-    public float maxPoints = 8f;
+    public Slider hoopSlider;
 
     [Tooltip("Game ends after this many seconds have elapsed")]
     public float timerAmount = 60f;
@@ -85,9 +85,18 @@ public class GameManager : MonoBehaviour
         }
         else if (State == GameState.MainMenu)
         {
+            // In the MainMenu state, button click should
+            // Play the start sound
             startSound.Play();
 
-            // In the MainMenu state, button click should start the game
+            // Reset and generate the level
+            hoopArea.ResetHoops();
+
+            // Show the score panels
+            uiController.ShowPlayerPanel(true);
+            uiController.ShowOpponentPanel(true);
+
+            // Start the game
             StartCoroutine(StartGame());
         }
         else
@@ -109,9 +118,13 @@ public class GameManager : MonoBehaviour
         // Subscribe to button click events from the UI
         uiController.OnButtonClicked += ButtonClicked;
 
+        // Generate a level
+        hoopArea.ResetHoops();
+
         // Start the main menu
         MainMenu();
 
+        // Get starting volume of the music
         volume = GetComponent<AudioSource>().volume;    
     }
 
@@ -129,20 +142,23 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void MainMenu()
     {
+        // Reset and generate the level
+        hoopArea.ResetHoops();
+
         // Set the state to "main menu"
         State = GameState.MainMenu;
 
         // Update the UI
         uiController.ShowBanner("");
         uiController.ShowButton("Start");
+        uiController.ShowSlider(true);
+        uiController.ShowPlayerPanel(false);
+        uiController.ShowOpponentPanel(false);
 
         // Use the main camera, disable agent cameras
         mainCamera.gameObject.SetActive(true);
         player.agentCamera.gameObject.SetActive(false);
         opponent.agentCamera.gameObject.SetActive(false); // Never turn this back on
-
-        // Reset the hoop
-        hoopArea.ResetHoops();
 
         // Reset the agents
         player.OnEpisodeBegin();
@@ -168,6 +184,7 @@ public class GameManager : MonoBehaviour
         // Update the UI (hide it)
         uiController.ShowBanner("");
         uiController.HideButton();
+        uiController.ShowSlider(false);
 
         // Use the player camera, disable the main camera
         mainCamera.gameObject.SetActive(false);
@@ -215,6 +232,12 @@ public class GameManager : MonoBehaviour
         if (player.pointsEarned >= opponent.pointsEarned)
         {
             uiController.ShowBanner("You won!");
+
+            // if the player beats the game with max hoops, unlock the ability to have up to 50
+            if(hoopSlider.value == hoopSlider.maxValue)
+            {
+                hoopSlider.maxValue = 50;
+            }
         }
         else
         {
@@ -234,16 +257,16 @@ public class GameManager : MonoBehaviour
         {
             // Check to see if time has run out or either agent got the max nectar amount
             if (TimeRemaining <= 0f ||
-                player.pointsEarned >= maxPoints ||
-                opponent.pointsEarned >= maxPoints)
+                player.pointsEarned >= hoopSlider.value ||
+                opponent.pointsEarned >= hoopSlider.value)
             {
                 EndGame();
             }
 
             // Update the timer and nectar progress bars
             uiController.SetTimer(TimeRemaining);
-            uiController.SetPlayerNectar(player.pointsEarned / maxPoints);
-            uiController.SetOpponentNectar(opponent.pointsEarned / maxPoints);
+            uiController.SetPlayerNectar(player.pointsEarned / hoopSlider.value);
+            uiController.SetOpponentNectar(opponent.pointsEarned / hoopSlider.value);
         }
         else if (State == GameState.Preparing || State == GameState.Gameover)
         {

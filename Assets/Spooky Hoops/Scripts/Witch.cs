@@ -29,6 +29,11 @@ public class Witch : Agent
     [Tooltip("Whether this is training mode or gameplay mode")]
     public bool trainingMode;
 
+    [Tooltip("How much the pitch of the hoop collection sound increases with each collected")]
+    public float maxPitchSound;
+
+    private float pitchStart;
+
     // The rigidbody of the agent
     new private Rigidbody rigidbody;
 
@@ -85,6 +90,8 @@ public class Witch : Agent
         //Obtain values for private variables
         rigidbody = GetComponent<Rigidbody>();
         soundPlayer = GetComponent<AudioSource>();
+        //Get the starting pitch
+        pitchStart = soundPlayer.pitch;
 
         // If not training mode, no max step, play forever
         if (!trainingMode) MaxStep = 0;
@@ -104,6 +111,9 @@ public class Witch : Agent
 
         // Reset points obtained
         pointsEarned = 0f;
+
+        // Reset pitch of sound
+        soundPlayer.pitch = pitchStart;
 
         // Zero out velocities so that movement stops before a new episode begins
         rigidbody.velocity = Vector3.zero;
@@ -306,7 +316,7 @@ public class Witch : Agent
             attemptsRemaining--;
             if (inFrontOfFHoop)
             {
-                // Pick a random flower
+                // Pick a random hoop
                 GameObject randomHoop = hoopArea.hoops[UnityEngine.Random.Range(0, hoopArea.hoops.Count)];
                 Hoop randomHoopScript = randomHoop.GetComponent<Hoop>();
 
@@ -402,6 +412,11 @@ public class Witch : Agent
 
             pointsEarned++;
 
+            // If human, increase the pitch of the sound as each hoop is collected based on the max and the number of hoops total
+            if(humanPlayer)
+            {
+                soundPlayer.pitch += (maxPitchSound - pitchStart) / GameManager.Instance.hoopSlider.value;
+            }
             soundPlayer.Play();
 
             //Reward the agent for going through the hoop

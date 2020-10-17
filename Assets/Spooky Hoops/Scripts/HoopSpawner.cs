@@ -4,26 +4,21 @@ using System.Linq;
 using System.Threading;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HoopSpawner : MonoBehaviour
 {
     //Variables for the hoop gameobject, the number of hoops spawned, the spawning area for the hoops, and the hoops list
     public GameObject hoop;
-    public int hoopNum;
+    public Slider hoopSlider;
     public Collider spawnZone;
     public List<GameObject> hoops;
-
-    //When the script starts, start generating hoops for the level
-    private void Start()
-    {
-        LevelGeneration();
-    }
 
     //Method used to generate the hoops in the level
     private void LevelGeneration()
     {
         //uses a for loop that only progresses if the position of the hoop is valid
-        for(int i = 0; i < hoopNum;)
+        for(int i = 0; i < hoopSlider.value * 2;)
         {
            bool positionGood = SpawnHoop();
            if(positionGood == true)
