@@ -49,7 +49,7 @@ public class HoopSpawner : MonoBehaviour
         }
 
         //Checks how many colliders are in the area for the hoop position
-        Collider[] colliders = Physics.OverlapSphere(hoopPosition, 0.05f);
+        Collider[] colliders = Physics.OverlapSphere(hoopPosition, 0.5f);
 
         //If there are more than two colliders in the spawning area, then return false to generate a new position
         if (colliders.Length >= 2)
