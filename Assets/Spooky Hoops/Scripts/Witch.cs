@@ -6,9 +6,6 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
-/// <summary>
-/// A hummingbird Machine Learning Agent
-/// </summary>
 public class Witch : Agent
 {
     [Tooltip("Force to apply when moving")]
@@ -77,14 +74,10 @@ public class Witch : Agent
     //Sound player for when collecting the hoops
     private AudioSource soundPlayer;
 
-    /// <summary>
-    /// The amount of nectar the agent has obtained this episode
-    /// </summary>
+    /// The amount of points the agent has obtained this episode
     public float pointsEarned { get; private set; }
 
-    /// <summary>
     /// Initialize the agent
-    /// </summary>
     public override void Initialize()
     {
         //Obtain values for private variables
@@ -97,9 +90,7 @@ public class Witch : Agent
         if (!trainingMode) MaxStep = 0;
     }
 
-    /// <summary>
     /// Reset the agent when an episode begins
-    /// </summary>
     public override void OnEpisodeBegin()
     {
         if (trainingMode)
@@ -134,7 +125,6 @@ public class Witch : Agent
         UpdateNearestHoop();
     }
 
-    /// <summary>
     /// Called when and action is received from either the player input or the neural network
     /// 
     /// vectorAction[i] represents:
@@ -143,8 +133,6 @@ public class Witch : Agent
     /// Index 2: move vector z (+1 = forward, -1 = backward)
     /// Index 3: pitch angle (+1 = pitch up, -1 = pitch down)
     /// Index 4: yaw angle (+1 = turn right, -1 = turn left)
-    /// </summary>
-    /// <param name="vectorAction">The actions to take</param>
     public override void OnActionReceived(float[] vectorAction)
     {
         // Don't take actions if frozen
@@ -179,10 +167,7 @@ public class Witch : Agent
         transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 
-    /// <summary>
     /// Collect vector observations from the environment
-    /// </summary>
-    /// <param name="sensor">The vector sensor</param>
     public override void CollectObservations(VectorSensor sensor)
     {
         // If nearestHoop is null, observe an empty array and return early
@@ -215,12 +200,9 @@ public class Witch : Agent
         // 10 total observations
     }
 
-    /// <summary>
     /// When Behavior Type is set to "Heuristic Only" on the agent's Behavior Parameters,
     /// this function will be called. Its return values will be fed into
-    /// <see cref="OnActionReceived(float[])"/> instead of using the neural network
-    /// </summary>
-    /// <param name="actionsOut">And output action array</param>
+    /// OnActionReceived(float[]) instead of using the neural network
     public override void Heuristic(float[] actionsOut)
     {
         humanPlayer = true;
@@ -228,40 +210,14 @@ public class Witch : Agent
         Vector3 forward = Vector3.zero;
         Vector3 left = Vector3.zero;
         Vector3 up = Vector3.zero;
-        //float pitch = 0f;
-        //float yaw = 0f;
-
-        // Convert keyboard inputs to movement and turning
-        // All values should be between -1 and +1
 
         //// Forward/backward
         if (Input.GetKey(KeyCode.W)) forward = transform.forward;
         else if (Input.GetKey(KeyCode.S)) forward = -transform.forward;
 
-        ////// Left/right
-        //if (Input.GetKey(KeyCode.A)) left = -transform.right;
-        //else if (Input.GetKey(KeyCode.D)) left = transform.right;
-
         // Up/down
         if (Input.GetKey(KeyCode.E)) up = transform.up;
         else if (Input.GetKey(KeyCode.C)) up = -transform.up;
-
-        //// Pitch up/down
-        //if (Input.GetKey(KeyCode.UpArrow)) pitch = 1f;
-        //else if (Input.GetKey(KeyCode.DownArrow)) pitch = -1f;
-
-        //// Turn left/right
-        //if (Input.GetKey(KeyCode.LeftArrow)) yaw = -1f;
-        //else if (Input.GetKey(KeyCode.RightArrow)) yaw = 1f;
-
-        //float y = Input.GetAxis("Mouse X") * yawSpeed;
-        //rotX += Input.GetAxis("Mouse Y") * pitchSpeed;
-
-        ////clamp the vertical rotation
-        //rotX = Mathf.Clamp(rotX, -90, 90);
-
-        ////rotate the camera
-        //transform.eulerAngles = new Vector3(-rotX, transform.eulerAngles.y + y, 0);
 
         // Combine the movement vectors and normalize
         Vector3 combined = (forward + left + up).normalized;
@@ -274,9 +230,7 @@ public class Witch : Agent
         //actionsOut[4] = yaw;
     }
 
-    /// <summary>
     /// Prevent the agent from moving and taking actions
-    /// </summary>
     public void FreezeAgent()
     {
         Debug.Assert(trainingMode == false, "Freeze/Unfreeze not supported in training");
@@ -286,9 +240,7 @@ public class Witch : Agent
         Debug.Log("Agent frozen");
     }
 
-    /// <summary>
     /// Resume agent movement and actions
-    /// </summary>
     public void UnfreezeAgent()
     {
         Debug.Assert(trainingMode == false, "Freeze/Unfreeze not supported in training");
@@ -298,11 +250,9 @@ public class Witch : Agent
         Debug.Log("Agent unfrozen");
     }
 
-    /// <summary>
     /// Move the agent to a safe random position (i.e. does not collide with anything)
     /// If in front of hoop, also point the agent at the hoop
-    /// </summary>
-    /// <param name="inFrontOfFHoop">Whether to choose a spot in front of a flower</param>
+    /// inFrontOfFHoop - whether to choose a spot in front of a hoop
     private void MoveToSafeRandomPosition(bool inFrontOfFHoop)
     {
         bool safePositionFound = false;
@@ -367,9 +317,7 @@ public class Witch : Agent
         transform.rotation = potentialRotation;
     }
 
-    /// <summary>
     /// Update the nearest flower to the agent
-    /// </summary>
     private void UpdateNearestHoop()
     {
         foreach (GameObject hoop in hoopArea.hoops)
@@ -396,10 +344,7 @@ public class Witch : Agent
         }
     }
 
-    /// <summary>
     /// Handles when the agen'ts collider enters or stays in a trigger collider
-    /// </summary>
-    /// <param name="collider">The trigger collider</param>
     private void OnTriggerEnter(Collider collider)
     {
         // Check if agent is colliding with the middle of the hoop
@@ -433,10 +378,6 @@ public class Witch : Agent
         }
     }
 
-    /// <summary>
-    /// Called when the agent collides with something solid
-    /// </summary>
-    /// <param name="collision">The collision info</param>
     private void OnCollisionEnter(Collision collision)
     {
         if (trainingMode && collision.collider.CompareTag("boundary"))
@@ -446,9 +387,7 @@ public class Witch : Agent
         }
     }
 
-    /// <summary>
     /// Called every frame
-    /// </summary>
     private void Update()
     {
         // Draw a line from the agent to the nearest hoop
@@ -465,9 +404,7 @@ public class Witch : Agent
         }
     }
 
-    /// <summary>
     /// Called every .02 seconds
-    /// </summary>
     private void FixedUpdate()
     {
         // Avoids scenario where nearest hoop is stolen by opponent and not updated
