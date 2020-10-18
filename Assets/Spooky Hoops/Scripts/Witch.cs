@@ -317,7 +317,7 @@ public class Witch : Agent
         transform.rotation = potentialRotation;
     }
 
-    /// Update the nearest flower to the agent
+    /// Update the nearest hoop to the agent
     private void UpdateNearestHoop()
     {
         foreach (GameObject hoop in hoopArea.hoops)
@@ -417,12 +417,12 @@ public class Witch : Agent
             //Calculate the current distance to the hoop
             currentDistanceToHoop = Vector3.Distance(transform.position, nearestHoop.transform.position);
 
-            //if the agent is closer to the hoop in this frame, then reward the agent
+            //if the agent is further from the hoop in this frame, then reward the agent
             if (currentDistanceToHoop > lastDistanceToHoop)
             {
                 AddReward(-0.001f);
             }
-            //if the agent is farther or the same distance from the hoop than the last frame, then punish the agent
+            //if the agent is closer or the same distance from the hoop than the last frame, then punish the agent
             else
             {
                 AddReward(0.001f);
